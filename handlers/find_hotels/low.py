@@ -2,6 +2,7 @@ from telebot.types import Message
 from states.user_data import UserInputInfo
 from loader import bot
 
+
 @bot.message_handler(commands=['low'])
 def low_function(message: Message):
     bot.set_state(message.from_user.id, UserInputInfo.input_city, message.chat.id)
