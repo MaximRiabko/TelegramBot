@@ -7,6 +7,13 @@ from states.user_states import UserInputState
 
 @bot.message_handler(commands=['history'])
 def history(message: Message) -> None:
+    """
+    Обработчик команд, срабатывает на команду /history
+    Обращается к базе данных и выдает в чат запросы пользователя
+    по отелям.
+    : param message : Message
+    : return : None
+    """
     logger.info('Выбрана команда history!')
     queries = database.read_from_db.read_query(message.chat.id)
     logger.info(f'Получены записи из таблицы query:\n {queries}')
@@ -18,6 +25,13 @@ def history(message: Message) -> None:
 
 @bot.message_handler(state=UserInputState.history_select)
 def input_city(message: Message) -> None:
+    """
+    Ввод пользователем номера запроса, которые есть в списке. Если пользователь введет
+    неправильный номер или это будет "не цифры", то бот попросит повторить ввод.
+    Запрос к базе данных нужных нам записей. Выдача в чат результата.
+    : param message : Message
+    : return : None
+    """
     if message.text.isdigit():
         queries = database.read_from_db.read_query(message.chat.id)
         number_query = []

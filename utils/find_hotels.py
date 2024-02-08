@@ -9,6 +9,13 @@ import database
 
 
 def find_and_show_hotels(message: Message, data: Dict) -> None:
+    """
+    Формирование запросов на поиск отелей, и детальной информации о них (адрес, фотографии).
+    Вывод полученных данных пользователю в чат.
+    : param message : Message
+    : param data : Dict данные, собранные от пользователя
+    : return : None
+    """
     payload = {
         "currency": "USD",
         "eapid": 1,

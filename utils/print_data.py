@@ -6,6 +6,13 @@ import database
 
 
 def print_data(message: Message, data: Dict) -> None:
+    """
+    Выводим в чат всё, что собрали от пользователя и передаем это в функцию поиска
+    отелей.
+    : param message : Message
+    : param data: Dict данные собранные от пользователя
+    : return : None
+    """
     database.add_to_bd.add_query(data)
 
     logger.info('Вывод суммарной информации о параметрах запроса пользователем.')

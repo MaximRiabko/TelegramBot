@@ -3,6 +3,12 @@ from loguru import logger
 
 
 def add_user(chat_id: int, username: str, full_name: str) -> None:
+    """
+    Данная функция при необходимости создаёт таблицу с данными пользователей.
+    Таблица хранит в себе: id, username, если в Телеграме у указаны имя и фамилия,
+    то эти данные также записываются в таблицу. Данная таблица не участвует в выдаче сохраненной
+    информации. Она просто хранит данные пользователя.
+    """
     connection = sqlite3.connect("database/history.sqlite3")
     cursor = connection.cursor()
     cursor.execute("""CREATE TABLE IF NOT EXISTS user(
@@ -25,6 +31,11 @@ def add_user(chat_id: int, username: str, full_name: str) -> None:
 
 
 def add_query(query_data: dict) -> None:
+    """
+    Функция создаёт таблицу, если её ещё не существует, и добавляет туда данные, введёные пользователем
+    :param query_data: dict
+    :return: None
+    """
     user_id = query_data['chat_id']
     connection = sqlite3.connect("database/history.sqlite3")
     cursor = connection.cursor()

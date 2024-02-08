@@ -13,6 +13,12 @@ import database
 
 @bot.message_handler(commands=['lowprice', 'highprice', 'bestdeal'])
 def low_high_best_handler(message: Message) -> None:
+    """
+    Обработчик команд, срабатывает на три команды /lowprice, /highprice, /bestdeal
+    и запоминает необходимые данные. Спрашивает пользователя - какой искать город.
+    : param message : Message
+    : return : None
+    """
     bot.set_state(message.chat.id, UserInputState.command)
     with bot.retrieve_data(message.chat.id) as data:
         data.clear()
@@ -28,6 +34,12 @@ def low_high_best_handler(message: Message) -> None:
 
 @bot.message_handler(state=UserInputState.input_city)
 def input_city(message: Message) -> None:
+    """
+    Ввод пользователем города и отправка запроса серверу на поиск вариантов городов.
+    Возможные варианты городов передаются генератору клавиатуры.
+    : param message : Message
+    : return : None
+    """
     with bot.retrieve_data(message.chat.id) as data:
         data['input_city'] = message.text
         logger.info('Пользователь ввел город: ' + message.text)
@@ -45,6 +57,12 @@ def input_city(message: Message) -> None:
 
 @bot.message_handler(state=UserInputState.quantity_hotels)
 def input_quantity(message: Message) -> None:
+    """
+    Ввод количества выдаваемых на странице отелей, а так же проверка, является ли
+    введённое числом и входит ли оно в заданный диапазон от 1 до 25
+    : param message : Message
+    : return : None
+    """
     if message.text.isdigit():
         if 0 < int(message.text) <= 25:
             logger.info('Ввод и запись количества отелей: ' + message.text)
@@ -60,6 +78,11 @@ def input_quantity(message: Message) -> None:
 
 @bot.message_handler(state=UserInputState.priceMin)
 def input_price_min(message: Message) -> None:
+    """
+    Ввод минимальной стоимости отеля и проверка чтобы это было число.
+    : param message : Message
+    : return : None
+    """
     if message.text.isdigit():
         logger.info('Ввод и запись минимальной стоимости отеля: ' + message.text)
         with bot.retrieve_data(message.chat.id) as data:
@@ -72,6 +95,12 @@ def input_price_min(message: Message) -> None:
 
 @bot.message_handler(state=UserInputState.priceMax)
 def input_price_max(message: Message) -> None:
+    """
+    Ввод максимальной стоимости отеля и проверка чтобы это было число. Максимальное число не может
+    быть меньше минимального.
+    : param message : Message
+    : return : None
+    """
     if message.text.isdigit():
         logger.info('Ввод и запись максимальной стоимости отеля, сравнение с price_min: ' + message.text)
         with bot.retrieve_data(message.chat.id) as data:
@@ -86,6 +115,11 @@ def input_price_max(message: Message) -> None:
 
 @bot.message_handler(state=UserInputState.photo_count)
 def input_photo_quantity(message: Message) -> None:
+    """
+    Ввод количества фотографий и проверка на число и на соответствие заданному диапазону от 1 до 10
+    : param message : Message
+    : return : None
+    """
     if message.text.isdigit():
         if 0 < int(message.text) <= 10:
             logger.info('Ввод и запись количества фотографий: ' + message.text)
@@ -100,6 +134,11 @@ def input_photo_quantity(message: Message) -> None:
 
 @bot.message_handler(state=UserInputState.landmarkIn)
 def input_landmark_in(message: Message) -> None:
+    """
+    Ввод начала диапазона расстояния до центра
+    : param message : Message
+    : return : None
+    """
     if message.text.isdigit():
         with bot.retrieve_data(message.chat.id) as data:
             data['landmark_in'] = message.text
@@ -111,6 +150,11 @@ def input_landmark_in(message: Message) -> None:
 
 @bot.message_handler(state=UserInputState.landmarkOut)
 def input_landmark_out(message: Message) -> None:
+    """
+    Ввод конца диапазона расстояния до центра
+    : param message : Message
+    : return : None
+    """
     if message.text.isdigit():
         with bot.retrieve_data(message.chat.id) as data:
             data['landmark_out'] = message.text
@@ -120,6 +164,11 @@ def input_landmark_out(message: Message) -> None:
 
 
 def check_command(command: str) -> str:
+    """
+    Проверка команды и назначение параметра сортировки
+    : param command : str команда, выбранная (введенная) пользователем
+    : return : str команда сортировки
+    """
     if command == '/bestdeal':
         return 'DISTANCE'
     elif command == '/lowprice' or command == '/highprice':
@@ -130,5 +179,11 @@ bot_calendar = Calendar()
 
 
 def my_calendar(message: Message, word: str) -> None:
+    """
+    Запуск инлайн-клавиатуры (календаря) для выбора дат заезда и выезда
+    : param message : Message
+    : param word : str слово (заезда или выезда)
+    : return : None
+    """
     bot.send_message(message.chat.id, f'Выберите дату: {word}',
                      reply_markup=bot_calendar.create_calendar(), )

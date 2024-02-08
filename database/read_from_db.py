@@ -3,6 +3,13 @@ from loguru import logger
 
 
 def read_query(user: int) -> list:
+    """
+    Принимает id пользователя, делает запрос к базе данных, получает в ответ
+    результаты запросов данного пользователя.
+
+    :param user: int
+    :return: str
+    """
     logger.info('Читаем таблицу query')
     connect = sqlite3.connect("database/history.sqlite3")
     cursor = connect.cursor()
@@ -13,6 +20,12 @@ def read_query(user: int) -> list:
 
 
 def get_history_response(query: str) -> dict:
+    """
+    Принимает id-запроса, обращается к базе данных и выдает данные которые нашел бот для
+    пользователя по его запросам.
+    : param query : str
+    : return : dict
+    """
     logger.info('Читаем таблицу response.')
     connect = sqlite3.connect("database/history.sqlite3")
     cursor = connect.cursor()
