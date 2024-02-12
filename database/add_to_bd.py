@@ -4,10 +4,14 @@ from loguru import logger
 
 def add_user(chat_id: int, username: str, full_name: str) -> None:
     """
-    Данная функция при необходимости создаёт таблицу с данными пользователей.
-    Таблица хранит в себе: id, username, если в Телеграме у указаны имя и фамилия,
-    то эти данные также записываются в таблицу. Данная таблица не участвует в выдаче сохраненной
+    Создает, если нужно, таблицу с данными пользователей:
+    id, username и, если есть, "имя фамилия" и добавляет туда данные, если
+    бота запускает новый пользователь. Данная таблица не участвует в выдаче сохраненной
     информации. Она просто хранит данные пользователя.
+    : param chat_id : int
+    : param username : str
+    : param full_name : str
+    : return : None
     """
     connection = sqlite3.connect("database/history.sqlite3")
     cursor = connection.cursor()
@@ -32,9 +36,10 @@ def add_user(chat_id: int, username: str, full_name: str) -> None:
 
 def add_query(query_data: dict) -> None:
     """
-    Функция создаёт таблицу, если её ещё не существует, и добавляет туда данные, введёные пользователем
-    :param query_data: dict
-    :return: None
+    Создаёт таблицу, если она ещё не создавалась и добавляет туда данные,
+    которые ввел пользователь для поиска
+    : param query_data : dict
+    : return : None
     """
     user_id = query_data['chat_id']
     connection = sqlite3.connect("database/history.sqlite3")
@@ -58,6 +63,8 @@ def add_query(query_data: dict) -> None:
         )
         logger.info('Добавлен в БД новый запрос.')
 
+        # Нам не нужно очень много записей историй поиска, поэтому для каждого пользователя
+        # будем хранить только 5 последних записей, лишние - удалим.
         cursor.execute(f"""
                 DELETE FROM query WHERE query.[date_time]=
                 (SELECT MIN([date_time]) FROM query WHERE `user_id` = '{user_id}' )
@@ -71,6 +78,12 @@ def add_query(query_data: dict) -> None:
 
 
 def add_response(search_result: dict) -> None:
+    """
+    Создаёт таблицу, если она ещё не создавалась и добавляет туда данные,
+    которые бот получил в результате запросов к серверу.
+    : param search_result : dict
+    : return : None
+    """
     connection = sqlite3.connect("database/history.sqlite3")
     cursor = connection.cursor()
     cursor.execute("""CREATE TABLE IF NOT EXISTS response(
@@ -102,3 +115,8 @@ def add_response(search_result: dict) -> None:
         logger.info('Добавлены в БД ссылки на фотографии отеля.')
         connection.commit()
     connection.close()
+
+
+
+
+
