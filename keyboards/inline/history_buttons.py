@@ -14,6 +14,11 @@ def get_history_queries(message: Message, records: list) -> None:
     keyboards_queries = types.InlineKeyboardMarkup()
     for item in records:
         caption = f"Дата запроса: {item[1]}, Введен город: {item[2]}"
-        keyboards_queries.add(types.InlineKeyboardButton(text=caption, callback_data=item[1]))
-    bot.send_message(message.from_user.id, "Пожалуйста, выберите интересующий вас запрос",
-                     reply_markup=keyboards_queries)
+        keyboards_queries.add(
+            types.InlineKeyboardButton(text=caption, callback_data=item[1])
+        )
+    bot.send_message(
+        message.from_user.id,
+        "Пожалуйста, выберите интересующий вас запрос",
+        reply_markup=keyboards_queries,
+    )

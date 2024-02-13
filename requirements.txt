@@ -9,3 +9,4 @@ urllib3~=1.26.11
 setuptools~=57.0.0
 loguru~=0.6.0
 pewee==3.17.1
+black==24.2.0

@@ -7,6 +7,7 @@ class UserInfoState(StatesGroup):
     запоминает состояния пользователя
 
     """
+
     name = State()
     age = State()
     country = State()
